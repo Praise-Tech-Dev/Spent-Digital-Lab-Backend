@@ -9,4 +9,9 @@ const RegisterUsersSchema = Joi.object({
     phoneNo: Joi.string().optional(),
 }); 
 
-module.exports = {RegisterUsersSchema};
+const LoginUsersSchema = Joi.object({
+    email: Joi.string().email().required(),
+    password: Joi.string().min(8).required(),
+})
+
+module.exports = {RegisterUsersSchema, LoginUsersSchema};
