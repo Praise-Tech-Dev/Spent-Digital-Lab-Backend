@@ -37,7 +37,10 @@ avatarUrl: {
     type: String,
     required: false, 
 },
-
+avatarPublicId: {
+    type: String,
+    required: false,
+}
 }, {_id: false, timestamps: true})
 
 module.exports = mongoose.model("Users", UsersSchema);
