@@ -1,4 +1,4 @@
-const { uploadAvatarService } = require("../services/user.services");
+const { uploadAvatarService, getMeService } = require("../services/user.services");
 const StatusCodes = require("../utils/statusCodes")
 
 const uploadAvatar = async (req, res) => {
@@ -27,4 +27,19 @@ const uploadAvatar = async (req, res) => {
     
 }
 
-module.exports = {uploadAvatar};
+const getMe = async (req, res) => {
+    const userId = req.user.userId;
+    try {
+        const response = await getMeService(userId);
+        return res.status(StatusCodes.OK).json({
+            message: "User fetched successfully",
+            data: response,
+        });
+    } catch (error) {
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+            message: error.message,
+        })
+    }
+}
+
+module.exports = {uploadAvatar, getMe};

@@ -26,5 +26,15 @@ const uploadAvatarService = async (file, userId) => {
     }
 }
 
+const getMeService = async (userId) => {
+    try {
+        const user = await User.findById(userId).select('-passwordHash');
+        const {__v, avatarPublicId, ...userData} = user.toObject();
+        return userData;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
 
-module.exports = { uploadAvatarService };
+
+module.exports = { uploadAvatarService, getMeService };

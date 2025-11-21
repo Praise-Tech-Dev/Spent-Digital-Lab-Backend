@@ -10,6 +10,22 @@ connectDB();
 // Initialize Express app
 const app = express();
 
+const allowedOrigins = [
+    "https://spent-digital-labs.vercel.app/",
+    "http://localhost:5173" 
+];
+app.use(cors({
+origin: function (origin, callback){
+if(!origin || allowedOrigins.includes(origin)){
+    return callback(null, true)
+}
+return callback(new Error("CORS policy violation: unallowed origin"))
+},
+credentials: true,
+}));
+
+
+
 // Middleware (Helper that run before your routes )
 app.use(cors());
 app.use(express.json());
