@@ -1,5 +1,6 @@
-const { uploadAvatarService, getMeService } = require("../services/user.services");
+const { uploadAvatarService, getMeService, updateUser } = require("../services/user.services");
 const StatusCodes = require("../utils/statusCodes")
+const { UpdateUserSchema } = require("../validation/userSchema");
 
 const uploadAvatar = async (req, res) => {
     const file = req.file;
@@ -42,4 +43,38 @@ const getMe = async (req, res) => {
     }
 }
 
-module.exports = {uploadAvatar, getMe};
+const updateProfile = async (req, res) => {
+    const user = req.user;
+    if (!req.body) {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+            message: "Request body is missing",
+        });
+    }
+    const { error, value } = UpdateUserSchema.validate(req.body);
+    
+    if (error) {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+        message: error.details[0].message,
+    });
+    }
+    try {
+        const response = await updateUser(value, user.userId);
+        if (response instanceof Error) {
+            return res.status(StatusCodes.BAD_REQUEST).json({
+                message: response.message,
+            })
+    }
+    return res.status(StatusCodes.OK).json({
+        message: "User updated successfully",
+        data: response,
+    });
+
+} catch (error) {
+    console.error("Error", error);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        message: error.message,
+    })
+}
+}
+
+module.exports = {uploadAvatar, getMe, updateProfile};

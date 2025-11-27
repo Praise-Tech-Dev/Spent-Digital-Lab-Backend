@@ -41,7 +41,7 @@ const loginUser = async (loginUserData) => {
         }
 
         //generate token 
-        const token = await jwt.sign({userId: user._id, email: user.email}, process.env.JWT_SECRET, {expiresIn: process.env.JWT_EXPIRES_IN || '1h'});
+        const token = await jwt.sign({userId: user._id, email: user.email, role: user.role}, process.env.JWT_SECRET, {expiresIn: process.env.JWT_EXPIRES_IN || '1h'});
 
         return {user: {
             email: user.email,

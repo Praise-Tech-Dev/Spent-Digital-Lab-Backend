@@ -36,5 +36,26 @@ const getMeService = async (userId) => {
     }
 }
 
+const updateUser = async (payload, userId) => {
+    try {
+        const user = await User.findById(userId);
+        if(!user){
+            return new Error("User not found");
+        }
 
-module.exports = { uploadAvatarService, getMeService };
+        const updated = await User.findByIdAndUpdate(userId, {
+            firstName: payload?.firstName ||user.firstName,
+            lastName: payload?.lastName || user.lastName,
+            phoneNo: payload?.phoneNo || user.phoneNo,
+            
+        },{new: true}
+    );
+        
+        const {_id, avatarPublicId,  __v, passwordHash, ...userData} = updated.toObject();
+        return userData;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+};
+
+module.exports = { uploadAvatarService, getMeService, updateUser };
