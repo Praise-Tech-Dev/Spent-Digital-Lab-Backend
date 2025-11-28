@@ -40,6 +40,11 @@ avatarUrl: {
 avatarPublicId: {
     type: String,
     required: false,
+},
+status : {
+    type: String,
+    enum: ['approved', 'pending', 'banned'],
+    default: 'pending',
 }
 }, {_id: false, timestamps: true})
 

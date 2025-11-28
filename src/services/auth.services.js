@@ -1,6 +1,7 @@
 const User = require("../models/usersModel");
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken")
+const jwt = require("jsonwebtoken");
+const StatusCodes = require("../utils/statusCodes");
 
 const registerUser = async (RegisterUserData) => {
     try{
@@ -35,6 +36,9 @@ const loginUser = async (loginUserData) => {
         if (!user) {
             return new Error("User not found");
         }
+        if (["pending", "banned"].includes(user.status) && user.role != "admin") {
+            return new Error("401 Unauthorized")
+        }    
         const isPasswordValid = await bcrypt.compare(loginUserData?.password, user.passwordHash);
         if (!isPasswordValid) {
             return new Error("Invalid password");
