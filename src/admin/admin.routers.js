@@ -6,6 +6,8 @@ const {
   adminGetUsers,
   adminApproveUser,
   createPublication,
+  adminPublishResearch,
+  adminGetAllResearch,
 } = require("./admin.controller");
 const upload = require("../middleware/multer");
 
@@ -27,5 +29,13 @@ adminRouter.post(
   upload.single("cover_image"),
   createPublication
 );
+
+adminRouter.patch(
+  "/publications/:researchId/publish",
+  authAdminMiddleware,
+  adminPublishResearch
+);
+
+adminRouter.get("/publications", authAdminMiddleware, adminGetAllResearch);
 
 module.exports = adminRouter;

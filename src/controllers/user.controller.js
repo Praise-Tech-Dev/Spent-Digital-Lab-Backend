@@ -1,6 +1,8 @@
-const { uploadAvatarService, getMeService, updateUser } = require("../services/user.services");
-const StatusCodes = require("../utils/statusCodes")
+const { uploadAvatarService, getMeService, updateUser, getPublications } = require("../services/user.services");
+const StatusCodes = require("../utils/statusCodes");
+const { message } = require("../validation/publicationSchema");
 const { UpdateUserSchema } = require("../validation/userSchema");
+
 
 const uploadAvatar = async (req, res) => {
     const file = req.file;
@@ -77,4 +79,24 @@ const updateProfile = async (req, res) => {
 }
 }
 
-module.exports = {uploadAvatar, getMe, updateProfile};
+const GetPublication = async (_req, res) => {
+    try {
+        const response = await getPublications();
+        if(response instanceof Error){
+            return res.status(StatusCodes.NOT_FOUND).json({
+                message: "No publication found",
+                data: []
+            })
+        } 
+        return res.status(StatusCodes.OK).json({
+            message: "Fetched Publications successfully",
+            data: response
+        })
+    } catch (error) {
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+            message: error.message,
+        });
+    }
+}
+
+module.exports = {uploadAvatar, getMe, updateProfile, GetPublication};

@@ -1,5 +1,6 @@
 const cloudinary = require('../config/cloudinary');
 const User = require('../models/usersModel');
+const Publications = require('../models/publicationModels');
 
 const uploadAvatarService = async (file, userId) => {
     try {
@@ -58,4 +59,17 @@ const updateUser = async (payload, userId) => {
     }
 };
 
-module.exports = { uploadAvatarService, getMeService, updateUser };
+const getPublications = async () => {
+    try {
+        const publications = await Publications.find({ status: "PUBLISHED" });
+        if (publications.length == 0) {
+            return new Error("No publications found");
+        }
+        return publications;
+    } catch (error) {
+        console.log(error);
+        throw new Error(error.message);
+    }
+}
+
+module.exports = { uploadAvatarService, getMeService, updateUser, getPublications };

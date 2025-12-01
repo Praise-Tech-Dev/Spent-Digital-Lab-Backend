@@ -57,4 +57,31 @@ const createResearchPublication = async (file, payload) => {
     }
 }
 
-module.exports = {getUsers, approveUser, createResearchPublication };
+const publishResearch = async (researchId, userId) => {
+    //check if the research exists
+    try {
+        const research = await Publication.findById(researchId);
+        if(!research){
+            return new Error("No research found"); 
+        }
+        await Publication.findByIdAndUpdate(researchId, { status: "PUBLISHED", approved_by: userId} );
+    } catch (error) {
+        console.log("Error", error);
+        throw new Error(error.message);
+    }
+    
+}
+
+const getAllResearch = async () => {
+    try {
+        const researches = await Publication.find();
+        if (researches.length == 0){
+            return new Error("No research found");
+        }
+        return researches;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
+
+module.exports = {getUsers, approveUser, createResearchPublication, publishResearch, getAllResearch };
