@@ -72,4 +72,18 @@ const getPublications = async () => {
     }
 }
 
-module.exports = { uploadAvatarService, getMeService, updateUser, getPublications };
+const getSinglePublication = async (publicationId) => {
+    try {
+        const singlePublication = await Publications.findById(publicationId);
+        if(!singlePublication){
+            return new Error("Publication not found");
+        }
+        return singlePublication;
+    } catch (error) {
+        console.log(error);
+        throw new Error(error.message);
+    }
+}
+
+
+module.exports = { uploadAvatarService, getMeService, updateUser, getPublications, getSinglePublication };

@@ -8,6 +8,7 @@ const {
   createPublication,
   adminPublishResearch,
   adminGetAllResearch,
+  adminUpdatePublication,
 } = require("./admin.controller");
 const upload = require("../middleware/multer");
 
@@ -37,5 +38,7 @@ adminRouter.patch(
 );
 
 adminRouter.get("/publications", authAdminMiddleware, adminGetAllResearch);
+
+adminRouter.put("/publications/:publicationId", authAdminMiddleware, adminUpdatePublication);
 
 module.exports = adminRouter;

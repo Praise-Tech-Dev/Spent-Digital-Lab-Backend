@@ -1,11 +1,13 @@
 const StatusCodes = require("../utils/statusCodes");
 const createResearchSchema = require("../validation/publicationSchema");
+const updatePublicationSchema = require("../validation/updatePublicationSchema");
 const {
   getUsers,
   approveUser,
   createResearchPublication,
   publishResearch,
   getAllResearch,
+  updatePublication,
 } = require("./admin.service");
 
 const adminGetUsers = async (req, res) => {
@@ -127,11 +129,46 @@ const adminGetAllResearch = async (req, res) => {
   }
 };
 
+const adminUpdatePublication = async (req, res) => {
+  const publicationId = req.params.publicationId;
+  if(!req.body) {
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      message: "Request body is missing",
+    });
+  }
+  const {error, value} = updatePublicationSchema.validate(req.body);
+
+  if (error) {
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      message: error.details[0].message,
+    });
+  }
+  console.log(value)
+  try {
+    const response = await updatePublication(value, publicationId);
+    if (response instanceof Error) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        message: response.message,
+      });
+    }
+    return res.status(StatusCodes.OK).json({
+      message: "Publication updated successfully",
+      data: response,
+    });
+  } catch (error) {
+      console.error("Error", error);
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        message: error.message,
+      })
+  }
+}
+
 module.exports = {
   adminGetUsers,
   adminApproveUser,
   createPublication,
   adminPublishResearch,
   adminGetAllResearch,
+  adminUpdatePublication
 };
 
